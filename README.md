@@ -1,2 +1,2 @@
 # The-Value-Digest
-ASX value investing
+Bottom-up, fundamental value investing focused on ASX listed companies

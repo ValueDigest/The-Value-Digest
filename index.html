@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Value Digest | ASX Fundamental Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141614;
+    --surface2: #1a1d1a;
+    --border: #252825;
+    --border2: #2e332e;
+    --accent: #c8f060;
+    --accent2: #9ac43a;
+    --text: #e8ede4;
+    --text2: #8a9487;
+    --text3: #5a6356;
+    --red: #e85555;
+    --green: #5bbf7a;
+    --amber: #f0a830;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,15,14,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo { font-family: var(--serif); font-size: 1.2rem; color: var(--text); text-decoration: none; letter-spacing: 0.01em; }
+  .nav-logo span { color: var(--accent); }
+  .nav-tagline { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* MAIN */
+  main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; }
+
+  /* HERO */
+  .hero { text-align: center; max-width: 680px; margin-bottom: 4rem; }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 0.72rem; color: var(--accent);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); }
+  .hero h1 {
+    font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 400; line-height: 1.15; margin-bottom: 1.25rem;
+  }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero-sub {
+    font-size: 1rem; color: var(--text2); line-height: 1.8;
+    max-width: 520px; margin: 0 auto 1.5rem;
+  }
+  .hero-divider { width: 40px; height: 1px; background: var(--border2); margin: 0 auto 1.5rem; }
+  .hero-focus {
+    display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 0.72rem; color: var(--text3);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .hero-focus span { display: flex; align-items: center; gap: 6px; }
+  .hero-focus span::before { content: '▸'; color: var(--accent); }
+
+  /* NAV BUTTONS */
+  .nav-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 780px;
+    margin-bottom: 2.5rem;
+  }
+  .nav-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem 1.25rem;
+    text-decoration: none;
+    color: var(--text);
+    display: flex; flex-direction: column;
+    align-items: flex-start; gap: 0.5rem;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+  .nav-btn:hover { border-color: var(--accent); background: var(--surface2); transform: translateY(-2px); }
+  .nav-btn-icon { font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .nav-btn-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 400; }
+  .nav-btn-desc { font-size: 0.78rem; color: var(--text3); line-height: 1.5; }
+  .nav-btn-arrow { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-top: auto; padding-top: 0.5rem; }
+
+  /* PAGES */
+  .page { display: none; width: 100%; max-width: 820px; }
+  .page.active { display: block; }
+  .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+  .back-btn {
+    background: none; border: 1px solid var(--border2); color: var(--text2);
+    padding: 7px 14px; border-radius: 4px; cursor: pointer;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em;
+    text-transform: uppercase; transition: all 0.2s; white-space: nowrap;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .page-title { font-family: var(--serif); font-size: 1.8rem; font-weight: 400; }
+
+  /* LATEST VALUE IDEA */
+  .idea-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; overflow: hidden;
+  }
+  .idea-top { padding: 2rem; border-bottom: 1px solid var(--border); }
+  .idea-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  .badge { font-family: var(--mono); font-size: 0.68rem; padding: 4px 10px; border-radius: 3px; }
+  .badge-sector { background: #1e2b1e; color: var(--green); border: 1px solid #2a3e2a; }
+  .badge-new { background: #1e2218; color: var(--accent); border: 1px solid #2e3520; }
+  .idea-ticker { font-family: var(--mono); font-size: 0.85rem; color: var(--text3); }
+  .idea-title { font-family: var(--serif); font-size: 1.7rem; font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; }
+  .idea-thesis { font-size: 0.9rem; color: var(--text2); line-height: 1.75; }
+  .idea-body { display: grid; grid-template-columns: 1fr 280px; }
+  .idea-metrics { padding: 1.5rem 2rem; border-right: 1px solid var(--border); }
+  .metrics-label { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+  .metric { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 0.75rem; }
+  .metric-label { font-size: 0.68rem; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .metric-val { font-family: var(--mono); font-size: 1rem; }
+  .metric-val.green { color: var(--green); }
+  .metric-val.amber { color: var(--amber); }
+  .idea-verdict { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
+  .verdict-label { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+  .verdict-box { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 0.85rem; }
+  .verdict-text { font-family: var(--serif); font-size: 1.1rem; color: var(--accent); }
+  .verdict-sub { font-size: 0.78rem; color: var(--text3); margin-top: 3px; }
+  .price-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.83rem; border-bottom: 1px solid var(--border); }
+  .price-row:last-child { border-bottom: none; }
+  .price-row span:first-child { color: var(--text3); }
+  .price-row span:last-child { font-family: var(--mono); }
+  .upside { color: var(--green); }
+  .risks-list { list-style: none; padding: 0; }
+  .risks-list li { font-size: 0.8rem; color: var(--text3); padding: 3px 0; display: flex; gap: 6px; }
+  .risks-list li::before { content: '—'; color: var(--border2); }
+
+  /* AD ZONE */
+  .ad-zone {
+    width: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--surface); border: 1px dashed var(--border2);
+    border-radius: 4px; color: var(--text3);
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+    text-transform: uppercase; position: relative; height: 90px;
+    margin: 1.5rem 0;
+  }
+  .ad-zone-label { position: absolute; top: 6px; left: 10px; font-size: 0.6rem; color: var(--text3); opacity: 0.5; }
+
+  /* INVESTMENT CRITERIA */
+  .criteria-intro { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin-bottom: 2rem; max-width: 580px; }
+  .criteria-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+  .criteria-item { background: var(--surface); padding: 1.5rem; }
+  .criteria-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); margin-bottom: 0.4rem; }
+  .criteria-name { font-family: var(--serif); font-size: 1.05rem; margin-bottom: 0.4rem; }
+  .criteria-desc { font-size: 0.83rem; color: var(--text2); line-height: 1.65; }
+  .criteria-threshold { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-top: 0.5rem; display: flex; align-items: center; gap: 5px; }
+  .criteria-threshold::before { content: '▸'; }
+  .criteria-note { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem 1.5rem; font-size: 0.83rem; color: var(--text2); line-height: 1.7; border-left: 3px solid var(--accent); }
+
+  /* SERVICES */
+  .services-intro { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin-bottom: 2rem; max-width: 580px; }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .service-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; display: flex; flex-direction: column; }
+  .service-card.featured { border-color: var(--accent); }
+  .service-icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+  .service-name { font-family: var(--serif); font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .service-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.65; flex: 1; margin-bottom: 1rem; }
+  .service-price { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 1rem; }
+  .btn-primary { background: var(--accent); color: #0d0f0e; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 0.85rem; transition: background 0.2s; text-align: center; display: inline-block; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost { border: 1px solid var(--border2); color: var(--text2); padding: 10px 20px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; transition: all 0.2s; text-align: center; display: inline-block; }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* PORTFOLIO */
+  .portfolio-intro { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin-bottom: 2rem; max-width: 580px; }
+  .portfolio-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .pstat { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.25rem; }
+  .pstat-num { font-family: var(--serif); font-size: 1.6rem; color: var(--accent); }
+  .pstat-label { font-size: 0.75rem; color: var(--text3); margin-top: 2px; }
+  .portfolio-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .portfolio-table th { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .portfolio-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .portfolio-table tr:hover td { background: var(--surface2); }
+  .portfolio-table tr:last-child td { border-bottom: none; }
+  .t-ticker { font-family: var(--mono); color: var(--accent); font-size: 0.8rem; }
+  .t-num { font-family: var(--mono); text-align: right; }
+  .t-green { color: var(--green); }
+  .t-red { color: var(--red); }
+  .t-amber { color: var(--amber); }
+  .t-status { display: inline-block; font-family: var(--mono); font-size: 0.68rem; padding: 3px 8px; border-radius: 3px; }
+  .s-open { background: #1a2e1a; color: var(--green); border: 1px solid #263e26; }
+  .s-watch { background: #2a2518; color: var(--amber); border: 1px solid #3a3220; }
+  .portfolio-note { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem 1.5rem; font-size: 0.82rem; color: var(--text2); line-height: 1.7; border-left: 3px solid var(--border2); }
+
+  /* CONTACT */
+  .contact-intro { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin-bottom: 2rem; max-width: 520px; }
+  .contact-form { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 2rem; max-width: 560px; }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.4rem; }
+  .form-input, .form-textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+    color: var(--text); padding: 10px 14px; border-radius: 4px;
+    font-family: var(--sans); font-size: 0.9rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+  .form-hint { font-size: 0.75rem; color: var(--text3); margin-top: 4px; text-align: right; }
+  .form-submit {
+    background: var(--accent); color: #0d0f0e; padding: 11px 28px;
+    border: none; border-radius: 4px; font-family: var(--sans);
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    transition: background 0.2s; width: 100%; margin-top: 0.5rem;
+  }
+  .form-submit:hover { background: var(--accent2); }
+  .form-success { display: none; background: #1a2e1a; border: 1px solid #2a3e2a; border-radius: 4px; padding: 1rem 1.25rem; font-size: 0.9rem; color: var(--green); margin-top: 1rem; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo { font-family: var(--serif); font-size: 0.9rem; color: var(--text3); }
+  .footer-logo span { color: var(--accent); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-disclaimer { width: 100%; font-size: 0.73rem; color: var(--text3); line-height: 1.6; border-top: 1px solid var(--border); padding-top: 1rem; }
+
+  @media (max-width: 700px) {
+    .nav-buttons { grid-template-columns: 1fr 1fr; }
+    .idea-body { grid-template-columns: 1fr; }
+    .idea-verdict { border-top: 1px solid var(--border); }
+    .criteria-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .portfolio-stats { grid-template-columns: repeat(2, 1fr); }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav-tagline { display: none; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <a href="#" class="nav-logo" onclick="showHome(); return false;">The <span>Value</span> Digest</a>
+    <div class="nav-tagline">ASX Fundamental Research</div>
+  </div>
+  <div style="font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em;">
+    www.thevaluedigest.com.au
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- HOME PAGE -->
+  <div id="homePage" style="width:100%; max-width:820px; display:flex; flex-direction:column; align-items:center;">
+
+    <div class="hero">
+      <div class="hero-eyebrow">Independent ASX Research</div>
+      <h1>Fundamental <em>value investing</em><br>in Australian equities</h1>
+      <p class="hero-sub">The Value Digest applies a rigorous, fundamentals-first framework to identify ASX-listed companies trading below their intrinsic value — with a clear margin of safety.</p>
+      <div class="hero-divider"></div>
+      <div class="hero-focus">
+        <span>Low P/E &amp; P/B</span>
+        <span>Strong free cash flow</span>
+        <span>Margin of safety</span>
+        <span>Catalyst-driven</span>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <a class="nav-btn" href="#" onclick="showPage('ideaPage'); return false;">
+        <div class="nav-btn-icon">📈</div>
+        <div class="nav-btn-title">Latest value idea</div>
+        <div class="nav-btn-desc">Our most recent ASX stock pitch with full valuation and thesis.</div>
+        <div class="nav-btn-arrow">View pitch →</div>
+      </a>
+      <a class="nav-btn" href="#" onclick="showPage('criteriaPage'); return false;">
+        <div class="nav-btn-icon">🔎</div>
+        <div class="nav-btn-title">Our investment criteria</div>
+        <div class="nav-btn-desc">The fundamental filters every stock must pass before we pitch it.</div>
+        <div class="nav-btn-arrow">See criteria →</div>
+      </a>
+      <a class="nav-btn" href="#" onclick="showPage('servicesPage'); return false;">
+        <div class="nav-btn-icon">📄</div>
+        <div class="nav-btn-title">Services offered</div>
+        <div class="nav-btn-desc">Free newsletter, premium research and community access.</div>
+        <div class="nav-btn-arrow">View services →</div>
+      </a>
+      <a class="nav-btn" href="#" onclick="showPage('portfolioPage'); return false;">
+        <div class="nav-btn-icon">📊</div>
+        <div class="nav-btn-title">View the portfolio</div>
+        <div class="nav-btn-desc">Track record of all pitched stocks and current positions.</div>
+        <div class="nav-btn-arrow">See portfolio →</div>
+      </a>
+      <a class="nav-btn" href="#" onclick="showPage('contactPage'); return false;">
+        <div class="nav-btn-icon">✉️</div>
+        <div class="nav-btn-title">Contact us</div>
+        <div class="nav-btn-desc">Get in touch with a question, sponsorship or feedback.</div>
+        <div class="nav-btn-arrow">Send message →</div>
+      </a>
+
+      <!-- AD ZONE — SIXTH GRID CELL -->
+      <!-- ============================================================
+           AD ZONE: HOME PAGE GRID SPONSOR TILE
+           Replace the content below with a sponsor logo/link or
+           an AdSense responsive unit once approved.
+           ============================================================ -->
+      <div style="background: var(--surface); border: 1px dashed var(--border2); border-radius: 6px; padding: 1.25rem; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.4rem;">
+        <div style="font-family:var(--mono); font-size:0.65rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em;">Sponsored</div>
+        <div style="font-size:0.78rem; color:var(--text3); text-align:center; line-height:1.5;">Advertising space<br>available here</div>
+        <!-- PASTE SPONSOR OR ADSENSE CODE HERE -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LATEST VALUE IDEA PAGE -->
+  <div class="page" id="ideaPage">
+    <div class="page-header">
+      <button class="back-btn" onclick="showHome()">← Back</button>
+      <div class="page-title">Latest value idea</div>
+    </div>
+
+    <!-- ============================================================
+         AD ZONE: TOP OF PITCH PAGE — LEADERBOARD 728×90
+         ============================================================ -->
+    <div class="ad-zone" style="margin-bottom:1.5rem;">
+      <span class="ad-zone-label">Ad zone · leaderboard 728×90</span>
+      Advertising space — 728×90
+      <!-- PASTE ADSENSE OR SPONSOR CODE HERE -->
+    </div>
+
+    <div class="idea-card">
+      <div class="idea-top">
+        <div class="idea-meta">
+          <span class="badge badge-new">New · Jun 2025</span>
+          <span class="badge badge-sector">Industrials</span>
+          <span class="idea-ticker">ASX: YYY</span>
+        </div>
+        <div class="idea-title">Your Company Name Ltd</div>
+        <p class="idea-thesis">Replace this with your investment thesis. Describe why this company is undervalued, what the market is missing, and what catalyst could unlock value. A compelling pitch explains both the business and the opportunity in clear, direct language that any investor can follow.</p>
+      </div>
+      <div class="idea-body">
+        <div class="idea-metrics">
+          <div class="metrics-label">Key valuation metrics</div>
+          <div class="metrics-grid">
+            <div class="metric"><div class="metric-label">P/E Ratio</div><div class="metric-val amber">7.2x</div></div>
+            <div class="metric"><div class="metric-label">EV/EBITDA</div><div class="metric-val green">4.1x</div></div>
+            <div class="metric"><div class="metric-label">Div. Yield</div><div class="metric-val">6.4%</div></div>
+            <div class="metric"><div class="metric-label">P/B Ratio</div><div class="metric-val green">0.65x</div></div>
+            <div class="metric"><div class="metric-label">FCF Yield</div><div class="metric-val green">11.2%</div></div>
+            <div class="metric"><div class="metric-label">Net Debt/EBITDA</div><div class="metric-val amber">1.8x</div></div>
+          </div>
+        </div>
+        <div class="idea-verdict">
+          <div>
+            <div class="verdict-label">Verdict</div>
+            <div class="verdict-box">
+              <div class="verdict-text">Strong Buy</div>
+              <div class="verdict-sub">High conviction · 12–18 month horizon</div>
+            </div>
+          </div>
+          <div>
+            <div class="verdict-label">Valuation</div>
+            <div class="verdict-box">
+              <div class="price-row"><span>Current price</span><span>$2.84</span></div>
+              <div class="price-row"><span>Intrinsic value</span><span>$4.50</span></div>
+              <div class="price-row"><span>Margin of safety</span><span>37%</span></div>
+              <div class="price-row"><span>Upside potential</span><span class="upside">+58%</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="verdict-label">Key risks</div>
+            <ul class="risks-list">
+              <li>Commodity price exposure</li>
+              <li>Management execution risk</li>
+              <li>Low trading liquidity</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVESTMENT CRITERIA PAGE -->
+  <div class="page" id="criteriaPage">
+    <div class="page-header">
+      <button class="back-btn" onclick="showHome()">← Back</button>
+      <div class="page-title">Our investment criteria</div>
+    </div>
+    <p class="criteria-intro">Every stock pitched on The Value Digest must pass each of these fundamental filters. We are looking for businesses trading well below intrinsic value, with strong cash generation, conservative balance sheets, and a clear path to re-rating.</p>
+    <div class="criteria-grid">
+      <div class="criteria-item">
+        <div class="criteria-num">01</div>
+        <div class="criteria-name">Low Price-to-Earnings</div>
+        <div class="criteria-desc">We look for stocks trading at a meaningful discount to the broader market and to historical averages. A low P/E is a starting point, not a conclusion — we verify that earnings are real and sustainable.</div>
+        <div class="criteria-threshold">P/E below 12x, ideally below 8x</div>
+      </div>
+      <div class="criteria-item">
+        <div class="criteria-num">02</div>
+        <div class="criteria-name">Price-to-Book below 1x</div>
+        <div class="criteria-desc">Buying assets at a discount to their book value provides a fundamental margin of safety. We favour companies with tangible, realisable assets — not goodwill-heavy balance sheets.</div>
+        <div class="criteria-threshold">P/B below 1.0x preferred</div>
+      </div>
+      <div class="criteria-item">
+        <div class="criteria-num">03</div>
+        <div class="criteria-name">Strong free cash flow</div>
+        <div class="criteria-desc">Earnings can be manipulated — cash cannot. We prioritise companies generating substantial free cash flow relative to their enterprise value, which funds dividends, buybacks or debt reduction.</div>
+        <div class="criteria-threshold">FCF yield above 8%</div>
+      </div>
+      <div class="criteria-item">
+        <div class="criteria-num">04</div>
+        <div class="criteria-name">Manageable debt levels</div>
+        <div class="criteria-desc">Leverage amplifies both gains and losses. We avoid highly geared companies unless cash flows are extremely predictable and stable, and always stress-test the balance sheet.</div>
+        <div class="criteria-threshold">Net Debt / EBITDA below 2.5x</div>
+      </div>
+      <div class="criteria-item">
+        <div class="criteria-num">05</div>
+        <div class="criteria-name">Catalyst for re-rating</div>
+        <div class="criteria-desc">A cheap stock without a catalyst can stay cheap for years. We look for identifiable events — management change, asset sale, earnings recovery, sector re-rating — that could unlock value within our investment horizon.</div>
+        <div class="criteria-threshold">Identified catalyst required</div>
+      </div>
+      <div class="criteria-item">
+        <div class="criteria-num">06</div>
+        <div class="criteria-name">Aligned management</div>
+        <div class="criteria-desc">Management with meaningful skin in the game make better long-term capital allocation decisions. We favour founder-led or heavily insider-owned businesses where incentives are aligned with shareholders.</div>
+        <div class="criteria-threshold">Insiders own 5%+ of shares</div>
+      </div>
+    </div>
+    <div class="criteria-note">
+      <strong style="color:var(--text);">Our process in practice:</strong> A stock must satisfy at least four of these six criteria before we will pitch it. We weight free cash flow and the presence of a catalyst most heavily — a business that is cheap but deteriorating is a value trap, not a value opportunity.
+    </div>
+  </div>
+
+  <!-- SERVICES PAGE -->
+  <div class="page" id="servicesPage">
+    <div class="page-header">
+      <button class="back-btn" onclick="showHome()">← Back</button>
+      <div class="page-title">Services offered</div>
+    </div>
+    <p class="services-intro">The Value Digest is built for serious investors who want independent, fundamentals-driven research on ASX stocks — without the noise. Choose the level of access that suits you.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">📰</div>
+        <div class="service-name">Free newsletter</div>
+        <div class="service-desc">Monthly summary of what we're watching, macro commentary and one stock idea. No paywall — just rigorous analysis delivered to your inbox.</div>
+        <div class="service-price">Free · Monthly</div>
+        <a href="#" class="btn-ghost">Subscribe free</a>
+      </div>
+      <div class="service-card featured">
+        <div class="service-icon">📊</div>
+        <div class="service-name">Premium research</div>
+        <div class="service-desc">Full stock pitches with detailed financial models, valuation workings, risk analysis and buy/sell price targets. One new pitch per month, plus access to all past pitches.</div>
+        <div class="service-price">$XX / month · Cancel anytime</div>
+        <a href="#" class="btn-primary">Get access</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💬</div>
+        <div class="service-name">Community</div>
+        <div class="service-desc">Private forum for subscribers to discuss pitches, share ideas and challenge each other's analysis. Engaged, serious investors only.</div>
+        <div class="service-price">Included with Premium</div>
+        <a href="#" class="btn-ghost">Learn more</a>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         AD ZONE: SERVICES PAGE — IN-CONTENT BANNER
+         ============================================================ -->
+    <div class="ad-zone">
+      <span class="ad-zone-label">Ad zone · in-content banner 728×90</span>
+      Advertising space — 728×90
+      <!-- PASTE ADSENSE OR SPONSOR CODE HERE -->
+    </div>
+  </div>
+
+  <!-- PORTFOLIO PAGE -->
+  <div class="page" id="portfolioPage">
+    <div class="page-header">
+      <button class="back-btn" onclick="showHome()">← Back</button>
+      <div class="page-title">The portfolio</div>
+    </div>
+    <p class="portfolio-intro">A transparent record of every stock pitched on The Value Digest, including entry price, current price and performance since pitch date. We stand behind our ideas.</p>
+    <div class="portfolio-stats">
+      <div class="pstat"><div class="pstat-num">24</div><div class="pstat-label">Pitches published</div></div>
+      <div class="pstat"><div class="pstat-num" style="color:var(--green)">+18.4%</div><div class="pstat-label">Avg. return on pitched stocks</div></div>
+      <div class="pstat"><div class="pstat-num">18</div><div class="pstat-label">Positive outcomes</div></div>
+      <div class="pstat"><div class="pstat-num">6</div><div class="pstat-label">Negative outcomes</div></div>
+    </div>
+    <table class="portfolio-table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Company</th>
+          <th>Sector</th>
+          <th style="text-align:right">Entry price</th>
+          <th style="text-align:right">Current price</th>
+          <th style="text-align:right">Return</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="t-ticker">AAA</td><td>Company Alpha Ltd</td><td style="font-size:0.8rem;color:var(--text3)">Materials</td>
+          <td class="t-num">$1.85</td><td class="t-num">$2.48</td>
+          <td class="t-num t-green">+34.1%</td>
+          <td><span class="t-status s-open">Open</span></td>
+        </tr>
+        <tr>
+          <td class="t-ticker">BBB</td><td>Company Beta Ltd</td><td style="font-size:0.8rem;color:var(--text3)">Financials</td>
+          <td class="t-num">$4.20</td><td class="t-num">$4.70</td>
+          <td class="t-num t-green">+11.9%</td>
+          <td><span class="t-status s-open">Open</span></td>
+        </tr>
+        <tr>
+          <td class="t-ticker">CCC</td><td>Company Gamma Ltd</td><td style="font-size:0.8rem;color:var(--text3)">Energy</td>
+          <td class="t-num">$0.62</td><td class="t-num">$0.595</td>
+          <td class="t-num t-red">−4.0%</td>
+          <td><span class="t-status s-watch">Watch</span></td>
+        </tr>
+        <tr>
+          <td class="t-ticker">DDD</td><td>Company Delta Ltd</td><td style="font-size:0.8rem;color:var(--text3)">Industrials</td>
+          <td class="t-num">$3.10</td><td class="t-num">$4.25</td>
+          <td class="t-num t-green">+37.1%</td>
+          <td><span class="t-status s-open">Open</span></td>
+        </tr>
+        <tr>
+          <td class="t-ticker">EEE</td><td>Company Epsilon Ltd</td><td style="font-size:0.8rem;color:var(--text3)">Consumer</td>
+          <td class="t-num">$7.40</td><td class="t-num">$8.15</td>
+          <td class="t-num t-green">+10.1%</td>
+          <td><span class="t-status s-open">Open</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="portfolio-note">Returns shown are price returns from the date of publication and do not include brokerage, dividends or tax. Past performance is not indicative of future results. This is not financial advice.</div>
+  </div>
+
+  <!-- CONTACT PAGE -->
+  <div class="page" id="contactPage">
+    <div class="page-header">
+      <button class="back-btn" onclick="showHome()">← Back</button>
+      <div class="page-title">Contact us</div>
+    </div>
+    <p class="contact-intro">Have a question about our research, interested in sponsorship opportunities, or just want to say hello? Fill in the form below and we'll get back to you.</p>
+    <div class="contact-form">
+      <div class="form-group">
+        <label class="form-label" for="contactName">Full name</label>
+        <input class="form-input" type="text" id="contactName" placeholder="Your name" maxlength="80">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contactEmail">Email address</label>
+        <input class="form-input" type="email" id="contactEmail" placeholder="you@example.com" maxlength="120">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contactSubject">Subject</label>
+        <select class="form-input" id="contactSubject">
+          <option value="">Select a topic…</option>
+          <option>General enquiry</option>
+          <option>Subscription question</option>
+          <option>Sponsorship / advertising</option>
+          <option>Research feedback</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="contactMsg">Message</label>
+        <textarea class="form-textarea" id="contactMsg" placeholder="Your message…" maxlength="800" oninput="updateCount()"></textarea>
+        <div class="form-hint"><span id="charCount">0</span> / 800 characters</div>
+      </div>
+      <button class="form-submit" onclick="submitForm()">Send message</button>
+      <div class="form-success" id="formSuccess">
+        ✓ Thanks for your message — we'll be in touch shortly.
+      </div>
+    </div>
+  </div>
+  <!-- DISCLAIMER PAGE -->
+  <div class="page" id="disclaimerPage">
+    <div class="page-header">
+      <button class="back-btn" onclick="showHome()">← Back</button>
+      <div class="page-title">Disclaimer</div>
+    </div>
+    <div style="max-width:620px;">
+      <div class="criteria-note" style="margin-bottom:1.5rem;">
+        This page sets out the important legal information governing your use of The Value Digest website and its content.
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="criteria-num" style="margin-bottom:0.4rem;">General information only</div>
+        <div class="criteria-name" style="margin-bottom:0.5rem;">Not financial advice</div>
+        <p style="font-size:0.88rem; color:var(--text2); line-height:1.8;">All content published on The Value Digest (www.thevaluedigest.com.au) is provided for <strong style="color:var(--text)">informational and educational purposes only</strong>. Nothing on this website constitutes financial product advice, a recommendation to buy or sell any financial product, or an offer or invitation to apply for, acquire or dispose of any financial product.</p>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="criteria-num" style="margin-bottom:0.4rem;">Licensing</div>
+        <div class="criteria-name" style="margin-bottom:0.5rem;">No AFSL held</div>
+        <p style="font-size:0.88rem; color:var(--text2); line-height:1.8;">The Value Digest is not licensed to provide financial product advice. We do not hold an Australian Financial Services Licence (AFSL) and are not authorised representatives of any AFSL holder under the <em>Corporations Act 2001 (Cth)</em>. Nothing on this website should be construed as personal financial advice.</p>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="criteria-num" style="margin-bottom:0.4rem;">Your responsibility</div>
+        <div class="criteria-name" style="margin-bottom:0.5rem;">Do your own research</div>
+        <p style="font-size:0.88rem; color:var(--text2); line-height:1.8;">Before making any investment decision, you should conduct your own independent due diligence and consider whether any investment is appropriate for your personal financial circumstances, objectives and risk tolerance. We strongly encourage you to seek advice from a qualified, licensed financial adviser before investing.</p>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="criteria-num" style="margin-bottom:0.4rem;">Performance</div>
+        <div class="criteria-name" style="margin-bottom:0.5rem;">Past performance is not indicative of future results</div>
+        <p style="font-size:0.88rem; color:var(--text2); line-height:1.8;">Any reference to past performance of a stock, strategy or portfolio on this website is historical only and is not a reliable indicator of future performance. Investing in securities involves risk, including the possible loss of capital.</p>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="criteria-num" style="margin-bottom:0.4rem;">Accuracy</div>
+        <div class="criteria-name" style="margin-bottom:0.5rem;">No warranty on information</div>
+        <p style="font-size:0.88rem; color:var(--text2); line-height:1.8;">All information on this website is published in good faith and for general information purposes. The Value Digest makes no warranty of any kind — express or implied — about the completeness, accuracy, reliability, suitability or availability of any information, analysis or related graphics on this website. Any reliance you place on such information is strictly at your own risk.</p>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="criteria-num" style="margin-bottom:0.4rem;">Conflicts of interest</div>
+        <div class="criteria-name" style="margin-bottom:0.5rem;">Disclosure</div>
+        <p style="font-size:0.88rem; color:var(--text2); line-height:1.8;">The author(s) of The Value Digest may hold positions in securities discussed on this website. Any such holdings will be disclosed within the relevant publication. Sponsored content or advertising relationships will be clearly identified as such.</p>
+      </div>
+
+      <div class="portfolio-note">
+        By continuing to use this website you acknowledge that you have read and understood this disclaimer and agree that The Value Digest, its authors and affiliates are not liable for any investment decisions you make based on content published here.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The <span>Value</span> Digest</div>
+  <div class="footer-links">
+    <a href="#" onclick="showPage('ideaPage'); return false;">Latest idea</a>
+    <a href="#" onclick="showPage('criteriaPage'); return false;">Criteria</a>
+    <a href="#" onclick="showPage('servicesPage'); return false;">Services</a>
+    <a href="#" onclick="showPage('portfolioPage'); return false;">Portfolio</a>
+    <a href="#" onclick="showPage('contactPage'); return false;">Contact</a>
+    <a href="#" onclick="showPage('disclaimerPage'); return false;" style="color:var(--accent);">Disclaimer</a>
+  </div>
+  <p class="footer-disclaimer">
+    General information only — not financial advice. The Value Digest does not hold an AFSL. Always do your own research and consider consulting a licensed financial adviser before investing.
+    <a href="#" onclick="showPage('disclaimerPage'); return false;" style="color:var(--accent); white-space:nowrap;">Read full disclaimer →</a>
+  </p>
+</footer>
+
+<script>
+  function showPage(id) {
+    document.getElementById('homePage').style.display = 'none';
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function showHome() {
+    document.getElementById('homePage').style.display = 'flex';
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    window.scrollTo(0, 0);
+  }
+
+  function updateCount() {
+    const msg = document.getElementById('contactMsg');
+    document.getElementById('charCount').textContent = msg.value.length;
+  }
+
+  function submitForm() {
+    const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    const msg = document.getElementById('contactMsg').value.trim();
+    if (!name || !email || !msg) { alert('Please fill in your name, email and message.'); return; }
+    document.getElementById('formSuccess').style.display = 'block';
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactMsg').value = '';
+    document.getElementById('charCount').textContent = '0';
+  }
+</script>
+</body>
+</html>

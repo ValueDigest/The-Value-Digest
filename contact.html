@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | The Value Digest</title>
+<meta name="description" content="Get in touch with The Value Digest — for general enquiries, research questions, or to find out more about our getting started in investing sessions.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3006809246984518" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <a href="index.html" class="nav-logo">The <span>Value</span> Digest</a>
+    <div class="nav-tagline">ASX Fundamental Research</div>
+  </div>
+  <div style="font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em;">
+    www.thevaluedigest.com.au
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+  <div class="page-wrap">
+    <div class="page-header">
+      <a class="back-btn" href="index.html">← Back</a>
+      <div class="page-title">Contact us</div>
+    </div>
+
+    <p style="font-size:0.9rem;color:var(--text2);line-height:1.75;margin-bottom:2rem;max-width:520px;">We'd love to hear from you — whether you're just getting started or have a question about our research. Fill in the form below and we'll get back to you as soon as possible.</p>
+
+    <div class="form-card">
+      <div class="field">
+        <label>Enquiry type</label>
+        <select id="enquiry-type">
+          <option value="" disabled selected>Select an option…</option>
+          <option value="General enquiry">General enquiry</option>
+          <option value="Need help getting started">Need help getting started</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" id="contact-name" placeholder="First and last name">
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="contact-email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="contact-message" placeholder="Tell us how we can help…"></textarea>
+      </div>
+      <div class="hp-field" aria-hidden="true">
+        <input type="text" id="honeypot" tabindex="-1" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Human verification</label>
+        <div class="captcha-box">
+          <span class="captcha-question" id="captcha-question"></span>
+          <span style="color:var(--text3);font-family:var(--mono)">=</span>
+          <input type="text" class="captcha-input" id="captcha-answer" placeholder="?">
+        </div>
+        <div class="captcha-hint">Please answer the simple maths question above to confirm you're human.</div>
+        <div class="captcha-error" id="captcha-error">Incorrect answer — please try again.</div>
+      </div>
+      <button class="btn-submit" id="submit-btn" onclick="handleContactSubmit()">Send message</button>
+      <div class="success-msg" id="contact-success">✓ Thanks for your message — we'll be in touch shortly at the email address you provided.</div>
+      <div class="error-msg" id="contact-error"></div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The <span>Value</span> Digest</div>
+  <div class="footer-links">
+    <a href="idea.html">Latest idea</a>
+    <a href="criteria.html">Criteria</a>
+    <a href="services.html">Services</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="contact.html">Contact</a>
+    <a href="about.html">About</a>
+    <a href="disclaimer.html" style="color:var(--accent);">Disclaimer</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+  </div>
+  <p class="footer-disclaimer">
+    General information only — not financial advice. The Value Digest does not hold an AFSL. Always do your own research and consider consulting a licensed financial adviser before investing.
+    &nbsp;·&nbsp; <a href="disclaimer.html" style="color:var(--accent); white-space:nowrap;">Read full disclaimer →</a>
+  </p>
+</footer>
+
+<script>
+  let captchaAnswer;
+  function generateCaptcha() {
+    const a = Math.floor(Math.random() * 9) + 1;
+    const b = Math.floor(Math.random() * 9) + 1;
+    const ops = [
+      { q: `${a} + ${b}`, a: a + b },
+      { q: `${a + b} − ${b}`, a: a },
+      { q: `${a} × ${Math.min(b, 3)}`, a: a * Math.min(b, 3) }
+    ];
+    const chosen = ops[Math.floor(Math.random() * ops.length)];
+    document.getElementById('captcha-question').textContent = `What is ${chosen.q}?`;
+    captchaAnswer = chosen.a;
+  }
+  generateCaptcha();
+
+  async function handleContactSubmit() {
+    const type    = document.getElementById('enquiry-type').value;
+    const name    = document.getElementById('contact-name').value.trim();
+    const email   = document.getElementById('contact-email').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+    const honey   = document.getElementById('honeypot').value;
+    const answer  = document.getElementById('captcha-answer').value.trim();
+    const captchaErr = document.getElementById('captcha-error');
+    const errorMsg   = document.getElementById('contact-error');
+    if (honey) return;
+    if (!type || !name || !email || !message) {
+      errorMsg.textContent = 'Please fill in all fields before submitting.';
+      errorMsg.style.display = 'block'; return;
+    }
+    if (parseInt(answer) !== captchaAnswer) {
+      captchaErr.style.display = 'block';
+      document.getElementById('captcha-answer').value = '';
+      generateCaptcha(); return;
+    }
+    captchaErr.style.display = 'none';
+    errorMsg.style.display = 'none';
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const res = await fetch('https://formspree.io/f/xvznkbwz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ enquiry_type: type, name, email, message })
+      });
+      if (res.ok) {
+        document.getElementById('contact-success').style.display = 'block';
+        btn.textContent = 'Message sent ✓';
+      } else throw new Error();
+    } catch(e) {
+      btn.disabled = false; btn.textContent = 'Send message';
+      errorMsg.textContent = 'Something went wrong. Please try again or email us at kissingpointpartners@gmail.com';
+      errorMsg.style.display = 'block';
+    }
+  }
+</script>
+</body>
+</html>
